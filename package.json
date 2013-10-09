@@ -9,7 +9,7 @@
     "express": "3.4.0",
     "ejs": "*",
     "stylus": "*"
-  }
+  },
   "engines": {
     "node": "0.10.x",
     "npm": "1.2.x"
