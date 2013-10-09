@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+
+    <title>Group Dine</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/jumbotron-narrow.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+function searchRestaurant()
+{         
+          cu=$('#cuisinePreferences').val();
+          lo=$('#locality').val();
+          //alert(cu+" "+ lo);
+          var data1={cuisine:cu,locality:lo};
+          console.log("hi a");
+          alert(JSON.stringify(data1));
+          $.ajax({
+          url: 'http://localhost:3000/restaurantFinder', //the URL to your node.js server that has data
+          dataType: 'json',
+          type:'POST',
+          data:data1,
+          cache: false,
+          //success: function(data){
+        //"data" will be JSON. Do what you want with it. 
+        //console.log("hi b");
+        //console.log(data);}
+      }).done(function(data){
+        //"data" will be JSON. Do what you want with it. 
+        console.log("hi b");
+        $.each(data.details,function(index,data)
+        {
+        restaurant=JSON.stringify(data);
+        var content='<div class=".col-xs-6 .col-md-6">';
+        content += '<h2>' + data.name + '</h2>';
+        content += '<p><b>Address:</b> ' + data.address + '<br><b> Cuisine:</b> ' + data.cuisine + ' <b>Price range:</b> ' + data.price +' <b>Rating:</b> ' + data.rating + ' <b>Website:</b> ' + data.website + ' <b>Telephone:</b> ' + data.telephone + '</p>';
+        content += '<p><a class="btn btn-default" href="#">View details &raquo;</a></p>';
+        content += '<br/>';
+        content +='</div>';
+        $(content).appendTo("#search_result");
+        });
+        });
+    
+        
+}
+</script>
+
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="#">Home</a></li>
+          <li> <a href="#">
+      <span class="badge pull-right">3</span>
+      Manage Events
+    </a>
+          <li>
+    <a href="#">
+      Create new Event
+    </a>
+  </li>
+        </ul>
+        <h3 class="text-muted">Group Dine</h3>
+      </div>
+
+      <div class="jumbotron">
+        <ul class="nav nav-pills nav-stacked">
+        <li class="active">
+        <a href="#">
+        <span class="badge pull-right">14</span>
+        NU Meetup
+      </a>
+        </li>
+  <li class="list-group-item">
+    <a href="#">
+      Add Friends
+    </a>
+  </li>
+
+  <li class="list-group-item">
+    <a href="#">
+      <span class="badge pull-right">3</span>
+      Send SMS
+    </a>
+  </li>
+  <li class="list-group-item">
+    <a href="#">
+      Email Group
+    </a>
+  </li>
+  
+</ul>
+         
+<form role="form">
+  <div class="form-group">
+    <label >Location</label>
+<select class="form-control" id="locality">
+  <option value="Evanston"> Evanston</option>
+  <option value="Chicago"> Chicago </option>
+  <option value="San Francisco"> San Francisco </option>
+  <option value="Washington DC"> Washington DC </option>
+  <option value="New York"> New York </option>
+</select>
+
+</select>  </div>
+  <div class="form-group">
+    <label>Cuisine Preferences</label>
+    <input type="text" class="form-control" id="cuisinePreferences" placeholder="American Italian" value="American Italian">
+  </div>
+  <button type="button" data-loading-text="Searching" class="btn btn-lg btn-success" onclick="searchRestaurant()">
+  Search
+</button>
+</form>
+<div id="search_result">
+          
+            
+            </div><!--/span-->
+      </div>
+
+      
+      <div class="footer">
+        <p>&copy; Der Hammer</p>
+      </div>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
