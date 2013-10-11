@@ -43,9 +43,9 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-//app.get('/', routes.index);
-//app.get('/users', user.list);
-app.post('/sendEmail/:data', email.sendEmail);
+app.get('/', routes.index);
+app.get('/users', user.list);
+//app.post('/sendEmail/:data', email.sendEmail);
 app.post('/restaurantFinder', function(req, res){
     res.contentType('application/json');
     res.header('Access-Control-Allow-Origin', '*');
