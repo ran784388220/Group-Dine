@@ -1,3 +1,4 @@
+
 /**
  * Module dependencies.
  */
@@ -7,9 +8,11 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
-var email = require('./routes/email');
-
 var Factual = require('factual-api');
+/**
+ * Module dependencies.
+ */
+
 
 var app = express();
 var allowCrossDomain = function(req, res, next) {
@@ -27,15 +30,12 @@ var allowCrossDomain = function(req, res, next) {
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
+app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.cookieParser('your secret here'));
-app.use(express.session());
 app.use(app.router);
-app.use(require('stylus').middleware(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
@@ -45,21 +45,32 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/users', user.list);
-//app.post('/sendEmail/:data', email.sendEmail);
 app.post('/restaurantFinder', function(req, res){
     res.contentType('application/json');
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     var resJSON;
+   var factual = new Factual('uQS3leKgmggjsYBVQeiTGaOp8VcIcZzRjnAzi2rZ', 'P3kbXUe19xcMwYtpNmomGzjb851HfceurUrZbYdc');
    search_form = req.body;  
    console.log(search_form.cuisine);
-   myList = (search_form.cuisine).split(" ");
-    console.log(myList[0]);
-    console.log(typeof(myList[0]));// <-- search items
-   var factual = new Factual('uQS3leKgmggjsYBVQeiTGaOp8VcIcZzRjnAzi2rZ', 'P3kbXUe19xcMwYtpNmomGzjb851HfceurUrZbYdc');
-       factual.get('/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"American"}},{"cuisine":{"$eq":"Italian"}},{"locality":"Evanston"}]}', function (error, items) {
+   cuisineList = (search_form.cuisine).split(" ");
+    console.log(cuisineList.length);
+    // <-- search items
+    if(cuisineList.length==1)
+        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"locality":"'+search_form.locality+'"}]}';
+    if(cuisineList.length==2)
+        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"locality":"'+search_form.locality+'"}]}';
+    if(cuisineList.length==3)
+        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"cuisine":{"$eq":"'+cuisineList[2]+'"}},{"locality":"'+search_form.locality+'"}]}';
+    if(cuisineList.length==4)
+        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"cuisine":{"$eq":"'+cuisineList[2]+'"}},{"cuisine":{"$eq":"'+cuisineList[3]+'"}},{"locality":"'+search_form.locality+'"}]}';
+    if(cuisineList.length==5)
+       var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"cuisine":{"$eq":"'+cuisineList[2]+'"}},{"cuisine":{"$eq":"'+cuisineList[3]+'"}},{"cuisine":{"$eq":"'+cuisineList[4]+'"}},{"locality":"'+search_form.locality+'"}]}';
+      console.log(url);
+       factual.get(url, function (error, items) {
   console.log(items.data);
+  console.log(items.included_rows);
   console.log("\n");
   console.log("Recommended Restaurants");
   console.log("-----------------------\n")
@@ -76,7 +87,7 @@ app.post('/restaurantFinder', function(req, res){
   //var restaurantJSON= JSON.stringify(restaurant);
   //console.log(restaurantJSON);
   //res.send(restaurant);
-  res.send(restaurantJSON); 
+ res.send(restaurantJSON);
 });
   
 });

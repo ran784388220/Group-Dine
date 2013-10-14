@@ -1,17 +1,17 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
+  "name": "groupdine",
+  "version": "0.0.1-7",
   "private": true,
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
     "express": "3.4.0",
-    "ejs": "*",
-    "stylus": "*"
-      },
+    "jade": "*",
+    "factual-api": "*"
+  },
+  "subdomain": "groupdine",
   "engines": {
-    "node": "0.10.x",
-    "npm": "1.2.x"
+    "node": "0.10.x"
   }
 }
