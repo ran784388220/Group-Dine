@@ -1,0 +1,395 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+
+    <title>Group Dine</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/jumbotron-narrow.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+    var peopleArray=new Array();
+    var ctr=0, cu;
+    var reco1,reco2,reco3;
+    var groupid,locality;
+    function addPeople()
+    {
+      pname=$('#name').val();
+      cp= new Array();
+      for(i=1;i<=9;i++)
+      {
+        cb = document.getElementById("cb"+i).checked;
+        if(cb==true)
+        {
+          console.log("\n"+document.getElementById("cb"+i).value);
+          cp.push(document.getElementById("cb"+i).value);
+
+        }
+      }
+      console.log(cp);
+      data1={gid:groupid,fname:pname,preference:cp}
+      $.ajax({
+      url: 'http://groupdine.jit.su/addPeople', //the URL to your node.js server that has data
+      dataType: 'json',
+      type:'POST',
+      data:data1,
+      cache: false
+      }).done(function(data){
+      //"data" will be JSON. Do what you want with it. 
+      console.log("hi b");
+      peopleinGroup();
+      });
+      }
+function peopleinGroup()
+{
+//Finds groupid from url        
+  var data1={gid:groupid};
+  $("#people").empty();
+  console.log("peopleinGroup");
+  $.ajax({
+  url: 'http://groupdine.jit.su/peopleinGroup', //the URL to your node.js server that has data
+  dataType: 'json',
+  type:'POST',
+  data:data1,
+  cache: false
+}).done(function(data){
+//"data" will be JSON. Do what you want with it. 
+groupdetails=JSON.parse(JSON.stringify(data));
+console.log(groupdetails.length);
+for(i=0;i<groupdetails.length;i++)
+{
+      peopleArray.push([groupdetails[i].name,groupdetails[i].preference]);
+var content = '<p><b>' + groupdetails[i].name + '</b>  ';
+content += groupdetails[i].preference+'</p>';
+//content += '<p>'+groupdetails[0].location+'</p>';
+$(content).appendTo("#people");
+}
+console.log(peopleArray[0][1].length);
+});
+
+
+}
+function getGroupDetails()
+{ 
+//Finds groupid from url        
+  url=document.URL;
+  content=(url).split('=');
+  groupid=content[1];
+  var data1={gid:groupid};
+  console.log("hi a"+groupid);
+  $("#search_result").empty();
+  $.ajax({
+  url: 'http://groupdine.jit.su/groupDetails', //the URL to your node.js server that has data
+  dataType: 'json',
+  type:'POST',
+  data:data1,
+  cache: false
+}).done(function(data){
+//"data" will be JSON. Do what you want with it. 
+groupdetails=JSON.parse(JSON.stringify(data));
+console.log(groupdetails[0].eventname);
+var content = '<h3>' + groupdetails[0].eventname + '</h3>';
+content += '<p>'+groupdetails[0].description+'</p>';
+content += '<p>'+groupdetails[0].location+'</p>';
+$(content).appendTo("#groupDetail");
+locality=groupdetails[0].location;
+peopleinGroup();
+});
+
+
+}
+
+
+function searchRestaurant()
+{         
+          peopleinGroup();
+          for(i=0;i<peopleArray.length;i++)
+            console.log(peopleArray[i]);
+          var cuisineReco; var cuisineStack;
+          cuisineStack=[peopleArray[0][1][0]];
+          //Finding the total unique cuisine preference
+          for(i=0;i<peopleArray.length;i++)
+          { j=0;
+            while(j<peopleArray[i][1].length)
+            {
+            
+                if($.inArray(peopleArray[i][1][j], cuisineStack)==-1)
+                {
+                  cuisineStack.push(peopleArray[i][1][j]);
+                  
+                }
+              j=j+1;
+            }
+          }
+          console.log(cuisineStack);
+          //Algorithm to compute Cuisine Preferences
+          var cuisineFactor=new Array(cuisineStack.length);
+          for(i=0;i<cuisineStack.length;i++)
+            cuisineFactor[i]=0;
+          for(i=0;i<cuisineStack.length;i++)
+          {
+            for(j=0;j<peopleArray.length;j++)
+            {
+             if($.inArray(cuisineStack[i],peopleArray[j][1])>=0)
+              cuisineFactor[i]=cuisineFactor[i]+1;
+            }
+            
+          }
+          console.log(cuisineFactor);
+          //Searching for Max
+          max=0;
+          console.log(cuisineFactor.length);
+          for(i=0;i<cuisineFactor.length;i++)
+          {
+            if(cuisineFactor[i]>max)
+              max=cuisineFactor[i];
+          }
+            index=$.inArray(max,cuisineFactor);
+            reco1=cuisineStack[index];
+            cuisineFactor[index]=0;
+            max=0;
+          for(i=0;i<cuisineFactor.length;i++)
+          {
+            if(cuisineFactor[i]>max)
+              max=cuisineFactor[i];
+          }
+          console.log(max);
+            index=$.inArray(max, cuisineFactor);
+            reco2=cuisineStack[index];
+            cuisineFactor[index]=0;
+          max=0;
+          for(i=0;i<cuisineFactor.length;i++)
+          {
+            if(cuisineFactor[i]>max)
+              max=cuisineFactor[i];
+          }
+            index=$.inArray(max, cuisineFactor);
+            reco3=cuisineStack[index];
+            cuisineFactor[index]=0;
+          
+            console.log(reco1+" "+reco2+" "+ reco3);
+          ctr=0;
+          s_ajax();
+        }
+          function s_ajax()
+          {
+          lo=locality;
+          if(ctr==0)
+            cu=reco1+' '+reco2+' '+reco3;
+          if(ctr==1)
+            cu=reco1+' '+reco2;
+          if(ctr==2)
+            cu=reco1+' '+reco3;
+          if(ctr==3)
+            cu=reco2+' '+reco3;
+          
+          console.log(cu);
+          ctr++;
+          //alert(cu+" "+ lo);
+          var data1={cuisine:cu,locality:lo};
+          console.log("hi a");
+          $("#search_result").empty();
+          $.ajax({
+          url: 'http://groupdine.jit.su/restaurantFinder', //the URL to your node.js server that has data
+          dataType: 'json',
+          type:'POST',
+          data:data1,
+          cache: false,
+          //success: function(data){
+        //"data" will be JSON. Do what you want with it. 
+        //console.log("hi b");
+        //console.log(data);}
+      }).done(function(data){
+        //"data" will be JSON. Do what you want with it. 
+        console.log("hi b");
+        restaurant=JSON.stringify(data);
+        console.log(restaurant);
+        if(jQuery.isEmptyObject(restaurant.details)&&(ctr<=3))
+          {
+            console.log(restaurant);
+            s_ajax();
+          }
+          var happiness= new Array();
+      for(i=0;i<peopleArray.length;i++)
+      {
+        if(ctr==1)
+        {
+
+        happiness[i] = 25;             // min happiness score equals 25  range  25-100
+        {
+          if($.inArray(reco1, peopleArray[i][1]) != -1)
+            happiness[i] += 25;
+          if($.inArray(reco2, peopleArray[i][1]) != -1)
+            happiness[i] += 25;
+          if($.inArray(reco3, peopleArray[i][1]) != -1)
+            happiness[i] += 25;
+        }
+      }
+       if(ctr==2)
+        {
+
+        happiness[i] = 25;             // min happiness score equals 25  range  25-100
+        {
+          if($.inArray(reco1, peopleArray[i][1]) != -1)
+            happiness[i] += 25;
+          if($.inArray(reco2, peopleArray[i][1]) != -1)
+            happiness[i] += 25;
+
+        }
+      }
+       if(ctr==3)
+        {
+
+        happiness[i] = 25;             // min happiness score equals 25  range  25-100
+        {
+          if($.inArray(reco1, peopleArray[i][1]) != -1)
+            happiness[i] += 25;
+          if($.inArray(reco3, peopleArray[i][1]) != -1)
+            happiness[i] += 25;
+        }
+      }
+       if(ctr==4)
+        {
+
+        happiness[i] = 25;             // min happiness score equals 25  range  25-100
+        {
+          if($.inArray(reco2, peopleArray[i][1]) != -1)
+            happiness[i] += 25;
+          if($.inArray(reco3, peopleArray[i][1]) != -1)
+            happiness[i] += 25;
+        }
+      }
+      }
+      console.log(happiness);
+        $.each(data.details,function(index,data)
+        {
+        restaurant=JSON.stringify(data);
+        var content='<div class=".col-xs-6 .col-md-6">';
+        content += '<h3>' + data.name + '</h3>';
+        content += '<p><b>Address:</b> ' + data.address + '<br><b> Cuisine:</b> ' + data.cuisine + ' <b>Price range:</b> ' + data.price +' <b>Rating:</b> ' + data.rating + ' <b>Website:</b> ' + data.website + ' <b>Telephone:</b> ' + data.telephone + '</p>';
+        content += '<p><a class="btn btn-default" href="#">View details &raquo;</a></p>';
+        //content += '<br/>';
+        content +='</div>';
+        $(content).appendTo("#search_result");
+        });
+
+        });
+    
+        
+}
+
+</script>
+
+  </head>
+
+  <body onload="getGroupDetails()">
+
+    <div class="container">
+      <div class="header">
+        <h2 class="text-muted"><b>Group Dine</b></h2>
+        <h4 class="text-muted"> <b>Happy Group eating</b></h4>
+      </div>
+      <div role="main">
+
+        <div class="well">
+          <div id="groupDetail" class="well">
+          </div>
+        <form role="form">
+    <div class="form-group">
+      <a data-toggle="modal" href="#myModal" class="btn btn-primary">Add your preference</a>
+<button type="button" data-loading-text="Searching" class="btn btn-success" onclick="searchRestaurant()">
+  Search for restaurants
+</button>
+</form>
+      <div class="well">
+          <h4> <b>People in group</b></h4>
+          <div id="people" >
+          </div>
+          
+          </div>
+<div id="search_result">
+          
+            
+            </div><!--/span-->
+      </div>
+
+        
+
+      
+      <div class="footer">
+        <p>&copy; Der Hammer</p>
+      </div>
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h2 class="modal-title">Details</h2>
+        </div>
+        <div class="modal-body">
+        <form role="form">
+    <label >Enter Name</label>
+    <input type="text" class="form-control" id="name">
+    <br/>
+    <label class="checkbox-inline">
+  <input type="checkbox" id="cb1" value="American"> American
+</label>
+<label class="checkbox-inline">
+  <input type="checkbox" id="cb2" value="Chinese"> Chinese
+</label>
+<label class="checkbox-inline">
+  <input type="checkbox" id="cb3" value="French"> French
+</label>
+<input type="checkbox" id="cb4" value="Greek"> Greek
+</label>
+<label class="checkbox-inline">
+  <input type="checkbox" id="cb5" value="Indian"> Indian
+</label>
+<label class="checkbox-inline">
+  <input type="checkbox" id="cb6" value="Japanese"> Japanese
+</label>
+<label class="checkbox-inline">
+  <input type="checkbox" id="cb7" value="Mediterranean"> Mediterranean
+</label>
+<label class="checkbox-inline">
+  <input type="checkbox" id="cb8" value="Mexican"> Mexican
+</label>
+<label class="checkbox-inline">
+  <input type="checkbox" id="cb9" value="Thai"> Thai
+</label>
+</form>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="addPeople()">Save changes</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

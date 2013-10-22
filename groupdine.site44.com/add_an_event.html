@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+
+    <title>Group Dine</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/jumbotron-narrow.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+function searchRestaurant()
+{         
+          cu=$('#cuisinePreferences').val();
+          lo=$('#locality').val();
+          //alert(cu+" "+ lo);
+          var data1={cuisine:cu,locality:lo};
+          console.log("hi a");
+          alert(JSON.stringify(data1));
+          $.ajax({
+          url: 'http://peaceful-brushlands-3822.herokuapp.com/restaurantFinder', //the URL to your node.js server that has data
+          dataType: 'json',
+          type:'POST',
+          data:data1,
+          cache: false,
+          //success: function(data){
+        //"data" will be JSON. Do what you want with it. 
+        //console.log("hi b");
+        //console.log(data);}
+      }).done(function(data){
+        //"data" will be JSON. Do what you want with it. 
+        console.log("hi ab");
+        $.each(data.details,function(index,data)
+        {
+        restaurant=JSON.stringify(data);
+        var content='<div class=".col-xs-6 .col-md-6">';
+        content += '<h2>' + data.name + '</h2>';
+        content += '<p><b>Address:</b> ' + data.address + '<br><b> Cuisine:</b> ' + data.cuisine + ' <b>Price range:</b> ' + data.price +' <b>Rating:</b> ' + data.rating + ' <b>Website:</b> ' + data.website + ' <b>Telephone:</b> ' + data.telephone + '</p>';
+        content += '<p><a class="btn btn-default" href="#">View details &raquo;</a></p>';
+        content += '<br/>';
+        content +='</div>';
+        $(content).appendTo("#search_result");
+        });
+        });
+    
+        
+}
+
+function inviteafriend()
+{
+	$this.after("<b>Hello<b>");
+
+}
+
+
+</script>
+
+  </head>
+
+  <body>
+		<div class="header">
+				<h2 class="text-muted"><label style="font-family: Arial;">Group Dine</label></h2>
+				<h4 class="text-muted"><label style="font-family: Arial;">Happy Group eating</label></h4>
+		</div>
+    <div class="container">
+
+
+
+      <div class="jumbotron">
+
+
+
+  <form>
+  <label>Event Name</label>
+  <input type="text" class="form-control" id="enterRef" placeholder="Enter name of the event">
+  </form>
+
+         
+<form role="form">
+  <div class="form-group">
+    <label>Location</label>
+<select class="form-control" id="locality">
+  <option value="Evanston"> Evanston</option>
+  <option value="Chicago"> Chicago </option>
+  <option value="San Francisco"> San Francisco </option>
+  <option value="Washington DC"> Washington DC </option>
+  <option value="New York"> New York </option>
+</select>
+  </div>
+  <button type="button" data-loading-text="Searching" class="btn btn-sm btn-success" onclick="inviteafriend()">
+  Invite a friend
+</button>
+  <div class="form-group">
+    <label>Name</label>
+    <input type="text" class="form-control" id="friendname" placeholder="ex. John">
+	<label>Email</label>
+    <input type="text" class="form-control" id="email" placeholder="ex. john@u.northwestern.edu">
+  </div>
+  <button type="button" data-loading-text="Searching" class="btn btn-lg btn-info" onclick="searchRestaurant()">
+  Submmit
+</button>
+</form>
+<div id="search_result">
+          
+            
+            </div><!--/span-->
+      </div>
+
+      
+      <div class="footer">
+        <p>&copy; Group Dine</p>
+      </div>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+  </body>
+</html>
+
+
