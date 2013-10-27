@@ -58,15 +58,15 @@ app.post('/restaurantFinder', function(req, res){
     console.log(cuisineList.length);
     // <-- search items
     if(cuisineList.length==1)
-        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"locality":"'+search_form.locality+'"}]}&geo={"$circle":{"$center":[42.05833,-87.67467],"$meters": 5000}}';    // replace the longitude and latitude with the current location of users
+        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"locality":"'+search_form.locality+'"}]}&geo={"$circle":{"$center":[34.06018, -118.41835],"$meters": 5000}}';    // replace the longitude and latitude with the current location of users
     if(cuisineList.length==2)
-        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"locality":"'+search_form.locality+'"}]}&geo={"$circle":{"$center":[42.05833,-87.67467],"$meters": 5000}}';
+        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"locality":"'+search_form.locality+'"}]}&geo={"$circle":{"$center":[34.06018, -118.41835],"$meters": 5000}}';
     if(cuisineList.length==3)
-        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"cuisine":{"$eq":"'+cuisineList[2]+'"}},{"locality":"'+search_form.locality+'"}]}&geo={"$circle":{"$center":[42.05833,-87.67467],"$meters": 5000}}';
+        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"cuisine":{"$eq":"'+cuisineList[2]+'"}},{"locality":"'+search_form.locality+'"}]}&geo={"$circle":{"$center":[34.06018, -118.41835],"$meters": 5000}}';
     if(cuisineList.length==4)
-        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"cuisine":{"$eq":"'+cuisineList[2]+'"}},{"cuisine":{"$eq":"'+cuisineList[3]+'"}},{"locality":"'+search_form.locality+'"}]}&geo={"$circle":{"$center":[42.05833,-87.67467],"$meters": 5000}}';
+        var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"cuisine":{"$eq":"'+cuisineList[2]+'"}},{"cuisine":{"$eq":"'+cuisineList[3]+'"}},{"locality":"'+search_form.locality+'"}]}&geo={"$circle":{"$center":[34.06018, -118.41835],"$meters": 5000}}';
     if(cuisineList.length==5)
-       var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"cuisine":{"$eq":"'+cuisineList[2]+'"}},{"cuisine":{"$eq":"'+cuisineList[3]+'"}},{"cuisine":{"$eq":"'+cuisineList[4]+'"}},{"locality":"'+search_form.locality+'"}]}&geo={"$circle":{"$center":[42.05833,-87.67467],"$meters": 5000}}';
+       var url='/t/restaurants-us?filters={"$and":[{"cuisine":{"$eq":"'+cuisineList[0]+'"}},{"cuisine":{"$eq":"'+cuisineList[1]+'"}},{"cuisine":{"$eq":"'+cuisineList[2]+'"}},{"cuisine":{"$eq":"'+cuisineList[3]+'"}},{"cuisine":{"$eq":"'+cuisineList[4]+'"}},{"locality":"'+search_form.locality+'"}]}&geo={"$circle":{"$center":[34.06018, -118.41835],"$meters": 5000}}';
       console.log(url);
        factual.get(url, function (error, items) {
   console.log(items.data);
