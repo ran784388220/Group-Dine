@@ -51,6 +51,14 @@ app.post('/restaurantFinder', function(req, res){
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     var resJSON;
+    if(navigator.geolocation)
+   {
+      navigator.geolocation.getCurrentPosition(showPosition,showError);
+   }
+      else{x.innerHTML="Geolocation is not supported by this browser.";}
+   }
+    var user.la=position.coords.latitude;
+    var user.lon=position.coords.longitude;
     var lag.push('user.la');
     var lon.push('user.lon');
     var sum1=0;
