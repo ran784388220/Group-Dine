@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -45,12 +44,23 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+app.get('users',user.la,user.lon);
 app.post('/restaurantFinder', function(req, res){
     res.contentType('application/json');
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     var resJSON;
+    var lag.push('user.la');
+    var lon.push('user.lon');
+    var sum1=0;
+    var sum2=0;
+    for (var i=0;i<lag.length;i++)
+       sum1+=lag[i];
+    for (var i=0;i<lon.length;i++)
+       sum2+=lon[i];
+     var mid_la=sum1/la.length;
+     var mid_lon=sum2/lon.length;
    var factual = new Factual('uQS3leKgmggjsYBVQeiTGaOp8VcIcZzRjnAzi2rZ', 'P3kbXUe19xcMwYtpNmomGzjb851HfceurUrZbYdc');
    search_form = req.body;  
    console.log(search_form.cuisine);
